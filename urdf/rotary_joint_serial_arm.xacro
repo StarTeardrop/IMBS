@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2016 The UUV Simulator Authors.
+     All rights reserved.
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!-- Import arm parameters -->
+    <xacro:include filename="$(find predator_description)/urdf/parameters/serial_arm_predator.xacro" />
+    <!-- Transmission Macro -->
+    <xacro:macro name="simple_transmission" params="joint">
+        <transmission name="${joint}_trans">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="${joint}">
+                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+            </joint>
+            <actuator name="${joint}_motor">
+                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+                <mechanicalReduction>1</mechanicalReduction>
+            </actuator>
+        </transmission>
+    </xacro:macro>
+
+
+    <!-- Transmission Macro -->
+    <!-- <xacro:macro name="simple_transmission" params="joint">
+      <transmission name="${joint}_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="${joint}">
+          <hardwareInterface>EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="${joint}_motor">
+          <hardwareInterface>EffortJointInterface</hardwareInterface>
+          <mechanicalReduction>1</mechanicalReduction>
+        </actuator>
+      </transmission>
+    </xacro:macro> -->
+
+
+    <xacro:macro name="predator_serial_arm" params="namespace">
+
+        <!-- Ground base -->
+
+        <link name="${namespace}/base">
+            <xacro:link_box_inertial mass="${total_mass * base_volume / total_volume_bbox}"
+                width="${base_width}"
+                length="${base_length}"
+                height="${base_height}">
+                <origin xyz="${base_com}" rpy="0 0 0" />
+            </xacro:link_box_inertial>
+
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <mesh filename="file://$(find predator_description)/meshes/base.dae" />
+                </geometry>
+            </visual>
+
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <mesh filename="file://$(find predator_description)/meshes/base.dae" />
+                </geometry>
+            </collision>
+        </link>
+
+        <!-- Shoulder link -->
+        <!-- 添加声呐模型到rexrov模型中-->
+        <xacro:include filename="$(find uuv_rexrov_sonar)/urdf/multibeam_sonar_blueview_p900.xacro" />
+
+        <!--固定关节-->
+        <joint name="${namespace}/azimuth" type="revolute">
+            <parent link="${namespace}/base"/>
+            <child  link="blueview_p900_standalone_base_link" />
+            <axis xyz="1 0 0"/>
+            <origin xyz="0 0 0.23" rpy="0 -1.57 -1.57"/>
+            <limit lower="-1.57" upper="1.57" velocity="0.17" effort="200"/>
+        </joint>
+
+        <!-- <link name="${namespace}/shoulder_link">
+            <xacro:link_box_inertial mass="${total_mass * shoulder_link_volume / total_volume_bbox}"
+                        width="${shoulder_link_width}"
+                        length="${shoulder_link_length}"
+                        height="${predator_shoulder_height}">
+                <origin xyz="${shoulder_link_com}" rpy="0 0 0"/>
+            </xacro:link_box_inertial>
+
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 1.57079632679"/>
+                <geometry>
+                    <mesh filename="file://$(find predator_description)/meshes/shoulder.dae"/>
+                </geometry>
+            </visual>
+
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 1.57079632679"/>
+                <geometry>
+                    <mesh filename="file://$(find predator_description)/meshes/shoulder.dae"/>
+                </geometry>                
+            </collision>
+        </link>
+
+        <joint name="${namespace}/azimuth" type="revolute">
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <parent link="${namespace}/base"/>
+            <child link="${namespace}/shoulder_link"/>
+            <axis xyz="0 0 1"/>
+            <origin xyz="0 0 0.0003" rpy="0 0 0"/>
+            <dynamics damping="100" friction="150"/>
+            <limit lower="${-60 * d2r}" upper="${60 * d2r}" velocity="0.17" effort="200"/>
+        </joint> -->
+
+
+        <xacro:simple_transmission joint="${namespace}/azimuth" />
+
+
+        <xacro:oberon7_gazebo_macro namespace="${namespace}" />
+    </xacro:macro>
+</robot>

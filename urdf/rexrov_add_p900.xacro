@@ -1,0 +1,18 @@
+<robot name="p900_sonar" xmlns:xacro="http://wiki.ros.org/xacro">
+
+    <!-- 添加声呐模型到rexrov模型中-->
+    <xacro:include filename="$(find uuv_rexrov_sonar)/urdf/multibeam_sonar_blueview_p900.xacro" />
+
+    <xacro:property name="sonar_x" value="1.3" /> <!-- sonar安装的x坐标 -->
+    <xacro:property name="sonar_y" value="0" /> <!-- sona安装的y坐标 -->
+    <xacro:property name="sonar_z" value="-0.6" /> <!-- sona安装的z坐标  -->
+
+    <!--固定关节-->
+    <joint name="${namespace}/rexrov2sonar_joint" type="fixed">
+        <parent link="${namespace}/base_link" />
+        <child link="blueview_p900_standalone_base_link" />
+        <origin xyz="${sonar_x} ${sonar_y} ${sonar_z}" rpy="0 0 0" />
+    </joint>
+
+
+</robot>

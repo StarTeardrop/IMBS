@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="uuv_name" />
+  <arg name="arm_name" default="predator"/>
+
+  <rosparam subst_value="true">
+    $(arg uuv_name):
+      $(arg arm_name):
+        azimuth:
+          controller:
+            type: effort_controllers/JointEffortController
+            joint: $(arg arm_name)/azimuth
+            pid: {p: 2000, i: 100, d: 50}
+  </rosparam>
+
+  <group ns="$(arg uuv_name)">
+    <!-- load the controllers -->
+    <node name="controller_spawner_$(arg arm_name)"
+          pkg="controller_manager"
+          type="spawner"
+          respawn="false"
+          output="screen"
+          ns="/$(arg uuv_name)"
+          args="/$(arg uuv_name)/$(arg arm_name)/azimuth/controller"/>
+  </group>
+</launch>

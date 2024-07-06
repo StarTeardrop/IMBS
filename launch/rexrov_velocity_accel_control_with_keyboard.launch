@@ -1,0 +1,71 @@
+<launch>
+    <arg name="gui" default="true" />
+    <arg name="paused" default="false" />
+    <arg name="world_name" default="$(find uuv_rexrov_sonar)/worlds/new_map2.world" />
+
+    <!-- use Gazebo's empty_world.launch with dave_ocean_waves.world -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(arg world_name)" />
+        <arg name="paused" value="$(arg paused)" />
+        <arg name="use_sim_time" value="true" />
+        <arg name="gui" value="$(arg gui)" />
+        <arg name="headless" value="false" />
+        <arg name="debug" value="false" />
+        <arg name="verbose" value="false" />
+    </include>
+
+    <!-- rexrov numbers-->
+    <arg name="model_name" value="rexrov" />
+    <arg name="uuv_name1" value="rexrov1" />
+
+    <!-- spawn rexrov robot-->
+    <!-- spawn rexrov1-->
+    <include file="$(find uuv_rexrov_sonar)/launch/upload_rexrov.launch">
+        <arg name="namespace" value="$(arg uuv_name1)" />
+        <arg name="x" value="0" />
+        <arg name="y" value="0" />
+        <!-- <arg name="x" value="-12" />
+        <arg name="y" value="-5" /> -->
+
+        <arg name="z" value="0" />
+        <arg name="yaw" value="1.57" />
+    </include>
+
+    <!-- start rexrov1 velocity, accel control-->
+    <include file="$(find uuv_rexrov_sonar)/launch/velocity_accel_control.launch">
+        <arg name="uuv_name" value="$(arg uuv_name1)" />
+        <arg name="model_name" value="$(arg model_name)" />
+    </include>
+
+    <!--keyboard
+    control-->
+    <include file="$(find uuv_rexrov_sonar)/launch/keyboard.launch">
+        <arg name="uuv_name" value="$(arg uuv_name1)" />
+        <arg name="output_topic" value="cmd_vel" />
+        <arg name="message_type" value="twist" />
+    </include>
+
+    <node name="sonar_image_flip_node" pkg="uuv_rexrov_sonar" type="turn_sonar_image.py"
+        output="screen">
+        <param name="uuv_name" type="string" value="/$(arg uuv_name1)" />
+    </node>
+
+    <!-- sonar image-->
+    <!-- image_view for sonar image -->
+    <!-- <node name="image_view_sonar" pkg="image_view" type="image_view"
+        args="image:=/$(arg uuv_name1)/blueview_p900/sonar_image_new ">
+        <param name="window_name" value="blueview_p900" />
+        <param name="autosize" value="true" />
+        <param name="filename_format" value="/tmp/SonarImage_capture_%04i.jpg" />
+    </node> -->
+
+    <node pkg="tf" type="static_transform_publisher" name="multibeam_sonar_base_link"
+        args="0 0 0 -1.57 0 -1.57 /$(arg uuv_name1)/base_link blueview_p900_forward_sonar_optical_link 50" />
+
+
+    <!-- 启动rviz-->
+    <!-- <node pkg="rviz" type="rviz" name="rviz"
+        args="-d $(find uuv_rexrov_sonar)/rviz/rexrov_sonar_test.rviz" /> -->
+
+
+</launch>

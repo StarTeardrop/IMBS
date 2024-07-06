@@ -1,0 +1,15 @@
+<launch>
+
+    <include
+        file="$(find uuv_rexrov_sonar)/launch/rexrov_velocity_accel_control_with_keyboard.launch" />
+
+
+    <node pkg="uuv_rexrov_sonar" type="ros_imu_pub" name="ros_imu_pub" output="screen" />
+
+
+    <node pkg="uuv_rexrov_sonar" type="ros_depth_pub" name="ros_depth_pub" output="screen" />
+
+
+    <node pkg="uuv_rexrov_sonar" type="ros_sonar_pub" name="ros_sonar_pub" output="screen" />
+
+</launch>

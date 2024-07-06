@@ -1,0 +1,14 @@
+<launch>
+
+    <arg name="world_file" default="$(find uuv_rexrov_sonar)/worlds/new_map2.world" />
+
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(arg world_file)" />
+        <arg name="paused" value="false" />
+        <arg name="use_sim_time" value="true" />
+        <arg name="gui" value="true" />
+        <arg name="headless" value="false" />
+        <arg name="debug" value="false" />
+    </include>
+
+</launch>
