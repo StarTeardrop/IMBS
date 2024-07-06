@@ -20,8 +20,8 @@
             5. git clone this project's package
             6. roslaunch uuv_rexrov_sonar sonar_slam.launch
                You can see a gazebo underwater environment, including rexrov, as shown in the following figure
-               ![Image text](https://github.com/StarTeardrop/uuv_rexrov_sonar/1.png)\
-               ![Image text](https://github.com/StarTeardrop/uuv_rexrov_sonar/2.png)
+               ![Image text](1.png)\
+               ![Image text](2.png)
             7. Place the mouse on the terminal and use WASD and QEZX to control the movement of the ROV
             8. rosrun uuv_rexrov_sonar ros_noetic_running_node Start Frontend pose estimation
                You can use RVIZ to view related topics, where you can see trajectories and point cloud maps
