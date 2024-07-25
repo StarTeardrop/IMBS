@@ -29,7 +29,3 @@
             9. rosrun uuv_rexrov_sonar ros_noetic_backend_node
                Then perform backend optimization
 
-3.problem：
-
-    If you have any questions, you can contact us through the following email address
-    Email: 821785315@foxmail.com
